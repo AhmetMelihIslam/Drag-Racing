@@ -826,9 +826,9 @@ MonoBehaviour:
     wheelCollider: {fileID: 6913860185925065897}
   - wheelModel: {fileID: 6827487918384775460}
     wheelCollider: {fileID: 1935720025061695773}
+  _maxAcceleration: 480
+  _brakeAcceleration: 960
   maxGears: 5
-  Tyremarks: []
-  drift: 0
 --- !u!65 &3375368236723907721
 BoxCollider:
   m_ObjectHideFlags: 0
