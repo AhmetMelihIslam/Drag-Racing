@@ -7,8 +7,8 @@ public class CarControl : SingletonDestroy<CarControl>
     [SerializeField] private List<Wheel> wheels;
     private Rigidbody _carRb;
     
-    private readonly float _maxAcceleration = 30.0f;
-    private readonly float _brakeAcceleration = 60.0f;
+    [SerializeField] private float _maxAcceleration = 30.0f;
+    [SerializeField] private float _brakeAcceleration = 60.0f;
     
     private MoveType _moveInput;
     
