@@ -20,8 +20,8 @@ public class CarControl : SingletonDestroy<CarControl>
     private readonly float gearShiftDelay = 1.0f;
     private readonly float minRPMToShift = 1000.0f;
     private readonly float[] _maxSpeedGearKmh = { 52.89f, 89.85f, 127.20f, 174.13f, 241.69f };
-    private float[] _minRPM = { 0, 4687, 4980, 5108, 5255 };
-    private float[] _maxRPM = { 7200, 7069, 6794, 6456, 7200 };
+    private float[] _minRpm = { 0, 4687, 4980, 5108, 5255 };
+    private float[] _maxRpm = { 7200, 7069, 6794, 6456, 7200 };
     private float _currentRPM = 0f;
 
     // Trail
@@ -265,13 +265,13 @@ public class CarControl : SingletonDestroy<CarControl>
     {
         // Assuming the wheels are spinning at a constant rate
         // Adjust this calculation based on your specific implementation
-        float wheelRPM = wheels[0].wheelCollider.rpm;
+        float wheelRpm = wheels[0].wheelCollider.rpm;
 
         // Calculate the engine RPM based on the wheel RPM and final drive ratio.
         float finalDriveRatio = 3.42f;
-        float engineRPM = wheelRPM * finalDriveRatio;
+        float engineRpm = wheelRpm * finalDriveRatio;
 
-        return Mathf.Abs(engineRPM);
+        return Mathf.Abs(engineRpm);
     }
     
     #endregion
