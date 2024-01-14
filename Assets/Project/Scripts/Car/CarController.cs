@@ -241,8 +241,6 @@ public class CarControl : SingletonDestroy<CarControl>
         
     public string MaxGearSpeedKMH()
     {
-        if (_maxSpeedGearKmh is null) InitMaxSpeedGearKMH();
-        
         string gearText = "GEAR INFO\n";
         for (int i = 0; i < _maxSpeedGearKmh.Length; i++)
         {
