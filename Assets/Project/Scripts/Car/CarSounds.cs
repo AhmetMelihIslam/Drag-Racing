@@ -3,8 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class CarSounds : MonoBehaviour
 {
-    [SerializeField] private float minSpeed;
-    [SerializeField] private float maxSpeed;
+    private float _minSpeed;
+    private float _maxSpeed;
     private float _currentSpeed;
 
     private AudioSource _carAudio;
@@ -18,6 +18,8 @@ public class CarSounds : MonoBehaviour
     {
         _carAudio = GetComponent<AudioSource>();
         _carControl = CarControl.Instance;
+        _minSpeed = .3f;
+        _maxSpeed = _carControl.CarMaxMmh;
     }
 
     private void Update()
@@ -30,17 +32,17 @@ public class CarSounds : MonoBehaviour
         _currentSpeed = _carControl.CarVelocity;
         _pitchFromCar = _carControl.CarVelocity / 60f;
 
-        if(_currentSpeed < minSpeed)
+        if(_currentSpeed < _minSpeed)
         {
             _carAudio.pitch = minPitch;
         }
 
-        if(_currentSpeed > minSpeed && _currentSpeed < maxSpeed)
+        if(_currentSpeed > _minSpeed && _currentSpeed < _maxSpeed)
         {
             _carAudio.pitch = minPitch + _pitchFromCar;
         }
 
-        if(_currentSpeed > maxSpeed)
+        if(_currentSpeed > _maxSpeed)
         {
             _carAudio.pitch = maxPitch;
         }

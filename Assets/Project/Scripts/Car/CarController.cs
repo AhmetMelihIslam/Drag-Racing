@@ -53,7 +53,7 @@ public class CarControl : SingletonDestroy<CarControl>
     {
         if (_isGearUp || _isGearDown) return;
         
-        if (_moveInput == MoveType.Gas && CarKmh < CarMaxKmh)
+        if (_moveInput == MoveType.Gas && CalculateRPM() < GetMaxRpm(_currentGear))
         {
             SetWheelMotorTorque(600 * _maxAcceleration * Time.deltaTime);
         }
@@ -150,14 +150,14 @@ public class CarControl : SingletonDestroy<CarControl>
         float rpm = CalculateRPM();
 
         // Automatic gear shift
-        if (rpm > minRPMToShift && _currentGear < maxGears && CarKmh > _maxSpeedGearKmh[_currentGear - 1])
+        if (rpm > GetMinRpm(_currentGear) && _currentGear < maxGears && CarKmh > _maxSpeedGearKmh[_currentGear - 1])
         {
             _currentGear++;
             
             AdjustRPMForGearUp();
             CheckGearIncrease();
         }
-        else if (_currentGear > 1 && CarKmh < _maxSpeedGearKmh[_currentGear - 2])
+        else if (_currentGear > 1 && rpm < GetMinRpm(_currentGear - 1) && CarKmh < _maxSpeedGearKmh[_currentGear - 2])
         {
             _currentGear--;
             StartCoroutine(nameof(GearDown));
@@ -277,10 +277,24 @@ public class CarControl : SingletonDestroy<CarControl>
     #endregion
     
     #region Getters
+
+    private float GetMinRpm(int index)
+    {
+        if (index >= _minRpm.Length) return _minRpm[^1];
+        
+        return _minRpm[index];
+    }
+    private float GetMaxRpm(int index)
+    {
+        if (index >= _maxRpm.Length) return _maxRpm[^1];
+        
+        return _maxRpm[index];
+    }
         
     public float CarVelocity => _carRb.velocity.magnitude;
     public float CarKmh => _carRb.velocity.magnitude * 3.6f;
     public float CarMaxKmh => _maxSpeedGearKmh[^1];
+    public float CarMaxMmh => _maxSpeedGearKmh[^1] / 2.3f;
 
     #endregion
 }
