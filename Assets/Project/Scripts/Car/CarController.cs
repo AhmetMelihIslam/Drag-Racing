@@ -19,7 +19,9 @@ public class CarControl : SingletonDestroy<CarControl>
     private int _currentGear = 1;
     private readonly float gearShiftDelay = 1.0f;
     private readonly float minRPMToShift = 1000.0f;
-    private float[] _maxSpeedGearKmh;
+    private readonly float[] _maxSpeedGearKmh = { 52.89f, 89.85f, 127.20f, 174.13f, 241.69f };
+    private readonly float[] _minRPM = { 0, 4687, 4980, 5108, 5255 };
+    private readonly float[] _maxRPM = { 7200, 7069, 6794, 6456, 7200 };
 
     // Trail
     private TrailRenderer[] Tyremarks;
