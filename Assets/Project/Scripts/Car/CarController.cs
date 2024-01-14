@@ -33,8 +33,6 @@ public class CarControl : SingletonDestroy<CarControl>
     {
         _carRb = GetComponent<Rigidbody>();
         Tyremarks = transform.GetComponentsInChildren<TrailRenderer>();
-
-        InitMaxSpeedGearKMH();
     }
     
     private void Update()
@@ -145,16 +143,6 @@ public class CarControl : SingletonDestroy<CarControl>
     #endregion
     
     #region Gear Functions
-
-    private void InitMaxSpeedGearKMH()
-    {
-        _maxSpeedGearKmh = new float[maxGears];
-        // Calculate all gear max speed
-        for (int i = 0; i < maxGears; i++)
-        {
-            _maxSpeedGearKmh[i] = CarMaxKMH / maxGears * (i + 1);
-        }
-    }
     
     private void ShiftGears()
     {
