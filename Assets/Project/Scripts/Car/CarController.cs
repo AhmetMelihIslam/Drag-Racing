@@ -53,7 +53,7 @@ public class CarControl : SingletonDestroy<CarControl>
     {
         if (_isGearUp || _isGearDown) return;
         
-        if (_moveInput == MoveType.Gas && CarKmh < CarMaxKMH)
+        if (_moveInput == MoveType.Gas && CarKmh < CarMaxKmh)
         {
             SetWheelMotorTorque(600 * _maxAcceleration * Time.deltaTime);
         }
