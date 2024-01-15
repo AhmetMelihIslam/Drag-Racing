@@ -786,7 +786,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5949336926017162678}
   serializedVersion: 4
-  m_Mass: 1500
+  m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -958,8 +958,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f5598f6cde731d47baeba0e5fdc927d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSpeed: 0.3
-  maxSpeed: 80
   minPitch: 0.2
   maxPitch: 0
 --- !u!1 &6356634582547382121
