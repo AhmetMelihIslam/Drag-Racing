@@ -7,8 +7,8 @@ public class CarControl : SingletonDestroy<CarControl>
     [SerializeField] private List<Wheel> wheels;
     private Rigidbody _carRb;
     
-    private readonly float _maxAcceleration = 30.0f;
-    private readonly float _brakeAcceleration = 60.0f;
+    [SerializeField] private float _maxAcceleration = 30.0f;
+    [SerializeField] private float _brakeAcceleration = 60.0f;
     
     private MoveType _moveInput;
     
@@ -19,7 +19,10 @@ public class CarControl : SingletonDestroy<CarControl>
     private int _currentGear = 1;
     private readonly float gearShiftDelay = 1.0f;
     private readonly float minRPMToShift = 1000.0f;
-    private float[] _maxSpeedGearKmh;
+    private readonly float[] _maxSpeedGearKmh = { 52.89f, 89.85f, 127.20f, 174.13f, 241.69f };
+    private float[] _minRpm = { 0, 4687, 4980, 5108, 5255 };
+    private float[] _maxRpm = { 7200, 7069, 6794, 6456, 7200 };
+    private float _currentRPM = 0f;
 
     // Trail
     private TrailRenderer[] Tyremarks;
@@ -31,8 +34,6 @@ public class CarControl : SingletonDestroy<CarControl>
     {
         _carRb = GetComponent<Rigidbody>();
         Tyremarks = transform.GetComponentsInChildren<TrailRenderer>();
-
-        InitMaxSpeedGearKMH();
     }
     
     private void Update()
@@ -52,7 +53,7 @@ public class CarControl : SingletonDestroy<CarControl>
     {
         if (_isGearUp || _isGearDown) return;
         
-        if (_moveInput == MoveType.Gas && CarKmh < CarMaxKMH)
+        if (_moveInput == MoveType.Gas && CalculateRPM() < GetMaxRpm(_currentGear))
         {
             SetWheelMotorTorque(600 * _maxAcceleration * Time.deltaTime);
         }
@@ -143,30 +144,20 @@ public class CarControl : SingletonDestroy<CarControl>
     #endregion
     
     #region Gear Functions
-
-    private void InitMaxSpeedGearKMH()
-    {
-        _maxSpeedGearKmh = new float[maxGears];
-        // Calculate all gear max speed
-        for (int i = 0; i < maxGears; i++)
-        {
-            _maxSpeedGearKmh[i] = CarMaxKMH / maxGears * (i + 1);
-        }
-    }
     
     private void ShiftGears()
     {
         float rpm = CalculateRPM();
 
         // Automatic gear shift
-        if (rpm > minRPMToShift && _currentGear < maxGears && CarKmh > _maxSpeedGearKmh[_currentGear - 1])
+        if (rpm > GetMinRpm(_currentGear) && _currentGear < maxGears && CarKmh > _maxSpeedGearKmh[_currentGear - 1])
         {
             _currentGear++;
             
             AdjustRPMForGearUp();
             CheckGearIncrease();
         }
-        else if (_currentGear > 1 && CarKmh < _maxSpeedGearKmh[_currentGear - 2])
+        else if (_currentGear > 1 && rpm < GetMinRpm(_currentGear - 1) && CarKmh < _maxSpeedGearKmh[_currentGear - 2])
         {
             _currentGear--;
             StartCoroutine(nameof(GearDown));
@@ -219,6 +210,7 @@ public class CarControl : SingletonDestroy<CarControl>
         {
             GameManager.Instance._isRaceFinish = true;
             _carRb.velocity = Vector3.zero;
+            _carRb.constraints = RigidbodyConstraints.FreezeAll;
             enabled = false;
         }
     }
@@ -251,8 +243,6 @@ public class CarControl : SingletonDestroy<CarControl>
         
     public string MaxGearSpeedKMH()
     {
-        if (_maxSpeedGearKmh is null) InitMaxSpeedGearKMH();
-        
         string gearText = "GEAR INFO\n";
         for (int i = 0; i < _maxSpeedGearKmh.Length; i++)
         {
@@ -275,22 +265,36 @@ public class CarControl : SingletonDestroy<CarControl>
     {
         // Assuming the wheels are spinning at a constant rate
         // Adjust this calculation based on your specific implementation
-        float wheelRPM = wheels[0].wheelCollider.rpm;
+        float wheelRpm = wheels[0].wheelCollider.rpm;
 
         // Calculate the engine RPM based on the wheel RPM and final drive ratio.
         float finalDriveRatio = 3.42f;
-        float engineRPM = wheelRPM * finalDriveRatio;
+        float engineRpm = wheelRpm * finalDriveRatio;
 
-        return Mathf.Abs(engineRPM);
+        return Mathf.Abs(engineRpm);
     }
     
     #endregion
     
     #region Getters
+
+    private float GetMinRpm(int index)
+    {
+        if (index >= _minRpm.Length) return _minRpm[^1];
+        
+        return _minRpm[index];
+    }
+    private float GetMaxRpm(int index)
+    {
+        if (index >= _maxRpm.Length) return _maxRpm[^1];
+        
+        return _maxRpm[index];
+    }
         
     public float CarVelocity => _carRb.velocity.magnitude;
     public float CarKmh => _carRb.velocity.magnitude * 3.6f;
-    public float CarMaxKMH => 250f;
+    public float CarMaxKmh => _maxSpeedGearKmh[^1];
+    public float CarMaxMmh => _maxSpeedGearKmh[^1] / 2.3f;
 
     #endregion
 }

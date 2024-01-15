@@ -5320,9 +5320,9 @@ MonoBehaviour:
     minSpeedArrowAngle: 21
     maxSpeedArrowAngle: -201
   _tachometer:
-    maxSpeed: 6000
+    maxSpeed: 7200
     minSpeedArrowAngle: 29
-    maxSpeedArrowAngle: -161
+    maxSpeedArrowAngle: -170
 --- !u!114 &2117624941
 MonoBehaviour:
   m_ObjectHideFlags: 0
